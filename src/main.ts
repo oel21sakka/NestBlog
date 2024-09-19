@@ -15,8 +15,17 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   app.enableCors();
   
-  await app.listen(3000);
+  await app.init();
+  return app;
 }
 
-bootstrap();
+let cachedApp;
+
+export default async (req, res) => {
+  if (!cachedApp) {
+    cachedApp = await bootstrap();
+  }
+  const instance = cachedApp.getHttpAdapter().getInstance();
+  return instance(req, res);
+};
 
