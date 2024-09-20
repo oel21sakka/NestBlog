@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { Post } from './post.entity';
@@ -59,7 +59,7 @@ export class PostService {
       throw new NotFoundException('Post not found');
     }
     if (post.user.id !== userId) {
-      throw new UnauthorizedException('You are not authorized to update this post');
+      throw new ForbiddenException('You are not authorized to update this post');
     }
     Object.assign(post, updatePostDto);
     return this.postRepository.save(post);
@@ -71,7 +71,7 @@ export class PostService {
       throw new NotFoundException('Post not found');
     }
     if (post.user.id !== userId) {
-      throw new UnauthorizedException('You are not authorized to delete this post');
+      throw new ForbiddenException('You are not authorized to delete this post');
     }
     await this.postRepository.delete(postId);
   }
