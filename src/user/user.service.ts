@@ -45,6 +45,24 @@ export class UserService {
     return { message: 'User followed successfully' };
   }
 
+  async unfollowUser(userId: number, unfollowUserId: number): Promise<{}> {
+    const user = await this.userRepository.findOne({ where: { id: userId }, relations: ['following'] });
+    const unfollowUser = await this.userRepository.findOne({ where: { id: unfollowUserId } });
+
+    if (!user || !unfollowUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    const followingIndex = user.following.findIndex(followingUser => followingUser.id === unfollowUserId);
+    if (followingIndex === -1) {
+      throw new BadRequestException('You are not following this user');
+    }
+
+    user.following.splice(followingIndex, 1);
+    await this.userRepository.save(user);
+    return { message: 'User unfollowed successfully' };
+  }
+
   async getUserPosts(userId: number): Promise<Post[]> {
     const user = await this.userRepository.findOne({ where: { id: userId }, relations: ['posts'] });
     if (!user) {
