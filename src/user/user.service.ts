@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException, UnauthorizedException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -68,7 +68,7 @@ export class UserService {
 
   async updateUser(userId: number, id: number, updateUserDto: UpdateUserDto): Promise<Omit<User, 'password'>> {
     if (userId !== id) {
-      throw new UnauthorizedException('You are not authorized to update this user');
+      throw new ForbiddenException('You are not authorized to update this user');
     }
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) {
@@ -82,7 +82,7 @@ export class UserService {
 
   async deleteUser(userId: number, id: number): Promise<void> {
     if (userId !== id) {
-      throw new UnauthorizedException('You are not authorized to delete this user');
+      throw new ForbiddenException('You are not authorized to delete this user');
     }
     const result = await this.userRepository.delete(id);
     if (result.affected === 0) {
