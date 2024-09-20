@@ -15,6 +15,13 @@ export class UserController {
     return this.userService.followUser(req.user.userId, id);
   }
 
+  @Delete('follow/:id')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  async unfollowUser(@Request() req, @Param('id') id: number) {
+    return this.userService.unfollowUser(req.user.userId, id);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getUserMe(@Request() req) {
