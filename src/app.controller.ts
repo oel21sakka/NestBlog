@@ -7,6 +7,6 @@ export class AppController {
 
   @Get()
   async check() {
-    return {"msg": "testing ...."};
+    return {"msg": "testing .... 1"};
   }
 }
